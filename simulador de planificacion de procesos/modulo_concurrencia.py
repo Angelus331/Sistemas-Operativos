@@ -26,7 +26,6 @@ class VentanaConcurrencia:
         style.configure("TCombobox", fieldbackground="#2b2b36", background="#1e1e2f", foreground="white")
 
     def _crear_widgets(self):
-        # 1. Panel de Control (Flat Design)
         frame_control = tk.Frame(self.root, bg="#2b2b36", padx=15, pady=15)
         frame_control.pack(fill="x", padx=20, pady=15)
         
@@ -48,7 +47,6 @@ class VentanaConcurrencia:
         self.btn_detener = tk.Button(frame_control, text="⏹ DETENER", font=("Helvetica", 10, "bold"), bg="#e74c3c", fg="white", relief="flat", padx=15, pady=4, state="disabled", command=self.detener_simulacion)
         self.btn_detener.pack(side="left", padx=5)
 
-        # 2. Panel de Simulación Visual en Vivo
         frame_visual = tk.Frame(self.root, bg="#1a1a24", pady=20, bd=0)
         frame_visual.pack(fill="x", padx=20, pady=(0, 15))
         
@@ -119,9 +117,6 @@ class VentanaConcurrencia:
         self.simulacion_activa = False
         self.root.destroy()
 
-    # =========================================================================
-    # 1. PRODUCTOR - CONSUMIDOR (Simulación Visual de Buffer)
-    # =========================================================================
     def ejecutar_productor_consumidor(self):
         buffer = []
         capacidad = 5
@@ -159,9 +154,6 @@ class VentanaConcurrencia:
         h_prod = threading.Thread(target=productor); self.hilos.append(h_prod); h_prod.start()
         h_cons = threading.Thread(target=consumidor); self.hilos.append(h_cons); h_cons.start()
 
-    # =========================================================================
-    # 2. FILÓSOFOS COMENSALES (Simulación Visual Circular)
-    # =========================================================================
     def ejecutar_filosofos(self):
         num_filosofos = 5
         tenedores = [threading.Lock() for _ in range(num_filosofos)]
@@ -178,7 +170,7 @@ class VentanaConcurrencia:
                 renderizar_mesa()
                 time.sleep(random.uniform(1, 2))
                 
-                estados[id_fil] = "⏳" # Esperando
+                estados[id_fil] = "⏳"
                 renderizar_mesa()
                 
                 # Sincronización asimétrica para evitar Deadlock y mitigar Inanición
@@ -199,9 +191,6 @@ class VentanaConcurrencia:
         for i in range(num_filosofos):
             t = threading.Thread(target=filosofo, args=(i,)); self.hilos.append(t); t.start()
 
-    # =========================================================================
-    # 3. BARBERO DORMILÓN (Simulación Visual de Sillas)
-    # =========================================================================
     def ejecutar_barbero(self):
         sillas_espera = 3
         clientes_esperando = [0]
@@ -246,9 +235,7 @@ class VentanaConcurrencia:
         t_barbero = threading.Thread(target=barbero); self.hilos.append(t_barbero); t_barbero.start()
         t_clientes = threading.Thread(target=generador_clientes); self.hilos.append(t_clientes); t_clientes.start()
 
-    # =========================================================================
-    # 4. LECTORES - ESCRITORES (Con Torniquete para evitar Inanición)
-    # =========================================================================
+
     def ejecutar_lectores_escritores(self):
         lectores_activos = [0]
         estado_db = ["💾 LIBRE"]
@@ -308,9 +295,7 @@ class VentanaConcurrencia:
         for i in range(2):
             t = threading.Thread(target=escritor, args=(i+1,)); self.hilos.append(t); t.start()
 
-    # =========================================================================
-    # 5. FUMADORES (Agente y Recursos Estrictos)
-    # =========================================================================
+
     def ejecutar_fumadores(self):
         sem_tabaco, sem_papel, sem_fosforo = threading.Semaphore(0), threading.Semaphore(0), threading.Semaphore(0)
         sem_agente = threading.Semaphore(1)
